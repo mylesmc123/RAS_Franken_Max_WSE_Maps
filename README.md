@@ -20,4 +20,4 @@ This repo consists of a Python script that will take output geotiff Max WSE rast
   
     ![image](https://github.com/user-attachments/assets/c3e451d2-429b-4597-a45d-9414a610c7ec)
 
-- **Origin Vector** - A vectorized representation of the Origin Raster that is dissolved to simplify the visualization of showing for what areas the max WSE is originating from a particulr precip input.
+- **Origin Vector** - A vectorized representation of the Origin Raster that is dissolved to simplify the visualization of showing for what areas the max WSE is originating from a particular precip input.
