@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # %%
 # Events
-events = ['010', '025', '050', '100', '200', '500']
+events = ['010', '050', '100', '500']
 
 # Path to your rasters
 # for event in events:
@@ -78,7 +78,7 @@ with rasterio.open('./out/010yr_Franken_Origin.tif', 'w', **meta) as dst:
 # Create a masked array where NoData values are set to np.nan
 masked_max = np.ma.masked_where(max_array == -9999, max_array)
 # Create a colormap
-cmap = plt.cm.turbo  # Choose your colormap
+cmap = plt.cm.viridis  # Choose your colormap
 cmap.set_bad(color='lightgray')  # Set the color for NoData values
 # Plot the masked array
 plt.imshow(masked_max, cmap=cmap, interpolation='nearest')
@@ -148,43 +148,40 @@ for region in regionprops(label_image):
 gdf = gpd.GeoDataFrame({'origin': origins}, geometry=geometries)
 # gdf.set_crs(epsg=meta['crs'].to_epsg(), inplace=True, allow_override=True)
 
+# %%
+gdf.plot(column='origin', cmap='tab20', legend=True)
+
+# %%
+# drop the -9999 values
+gdf = gdf[gdf['origin'] != -9999]
+gdf.plot(column='origin', cmap='tab20', legend=True)
 # %% 
 # Dissolve polygons by origin value to merge neighboring cells
-gdf_dissolved = gdf.dissolve(by='origin')
+gdf_dissolved = gdf.dissolve(by='origin', as_index=False)
 
-# Save to a shapefile
+# %%
+gdf_dissolved
+
+# %%
+# %% Plot dissolved GeoDataFrame
+plt.figure(figsize=(12, 8))
+
+# Reuse the same colormap and legend styling from origin raster plot
+gdf_dissolved.plot(column='origin', cmap=cmap, legend=False, ax=plt.gca())
+
+# Add the same custom legend
+handles = [plt.Line2D([0], [0], marker='o', color='w', label=value_to_filename[i+1],
+                      markersize=10, markerfacecolor=custom_colors[i]) for i in range(4)]
+plt.legend(handles=handles, title="Precip Event Origins", loc='upper left', bbox_to_anchor=(1.05, 1))
+
+plt.title("Dissolved Origins Vector Plot")
+plt.tight_layout()
+plt.show()
+# %%
+# Save to a shapefile or other vector format
+# Save to a shapefile with the origin as an attribute
 gdf_dissolved.to_file('./out/010yr_origin_maxWSE.shp')
 
-# Plot the GeoDataFrame
-gdf_dissolved.plot(column='origin', cmap='tab20', legend=True)
-
 # %%
-# Create a GeoDataFrame for the vector layer
-# showing the origins of the max wse values
-# geometries = []
-# for row in range(height):
-#     for col in range(width):
-#         if origin_array[row, col] != -1:  # Only if there's a valid origin
-#             # Create a polygon for each cell
-#             minx = col * meta['transform'][0] + meta['transform'][2]
-#             miny = row * meta['transform'][4] + meta['transform'][3]
-#             maxx = minx + meta['transform'][0]
-#             maxy = miny + meta['transform'][4]
-#             geometries.append(Polygon([(minx, miny), (maxx, miny), (maxx, maxy), (minx, maxy)]))
-
-# # Create the GeoDataFrame
-# gdf = gpd.GeoDataFrame({'origin': origin_array[origin_array != -1].flatten()}, geometry=geometries)
-# gdf.set_crs(epsg=meta['crs'].to_epsg(), inplace=True)
-
-
-# # %%
-# # Dissolve polygons by origin value to merge neighboring cells
-# gdf_dissolved = gdf.dissolve(by='origin')
-
-# # Save to a shapefile or other vector format
-# gdf_dissolved.to_file('./out/010yr_origin_maxWSE_dissolved.shp')
-
-# %%
-# Plot the GeoDataFrame
-gdf.plot(column='origin', cmap='tab20', legend=True)
+gdf_dissolved
 # %%
