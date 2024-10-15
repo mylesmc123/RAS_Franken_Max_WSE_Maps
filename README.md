@@ -25,5 +25,6 @@ This repo consists of a Python script that will take output geotiff Max WSE rast
 
 - **Origin Vector** - A vectorized representation of the Origin Raster that is dissolved to simplify the visualization of showing for what areas the max WSE is originating from a particular precip input. This output if actually being produced in ArcPro because the speed of the rasterize function is just so much faster than geopandas without multithreading. The ArcPro project is here for TWI folks: "V:\projects\p00659_dec_glo_phase3\01_processing\GIS\GIS_for_Figures"
 
-  ![image](https://github.com/user-attachments/assets/560eaf84-4ce1-44ea-ac37-3f47ec3124cb)
+![Franken Max WSE Origin 100yr](https://github.com/user-attachments/assets/b401c765-5b43-43df-810c-8d4addff96f7)
+
 
